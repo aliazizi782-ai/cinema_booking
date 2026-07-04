@@ -1,0 +1,252 @@
+################## # CONSTANTS
+BG="#6D5959"
+FG="white"
+
+################## # CNF_GRID
+CNF_GRID_GENERAL={
+    "padx":3,
+    "pady":5,
+}
+CNF_GRID_BTN_ROOT={
+    "padx":55,
+    "pady":10,
+}
+CNF_GRID_BTN_SIGN_UP_WINDOW={
+    "padx":3,
+    "pady":8,
+}
+CNF_GRID_BTN_MOVIE_WINDOW={
+    "padx":20,
+    "pady":3,
+    "columnspan":2,
+}
+CNF_GRID_LBL_MOVIE_WINDOW={
+    "padx":3,
+    "pady":2,
+    "sticky":"w",
+}
+CNF_GRID_ENTRY_HALL_WINDOW={
+    "padx":3,
+    "pady":2,
+    "columnspan":2,
+    "sticky":"w",
+}
+CNF_GRID_LBL_RESERVE_MOVIE_WINDOW={
+    "padx":50,
+    "pady":2,
+    "columnspan":2,
+    "sticky":"w",
+}
+CNF_GRID_BTN_RESERVE_MOVIE_WINDOW={
+    "padx":10,
+    "pady":15,
+}
+CNF_GRID_LBL_SCREEN_WINDOW={
+    "padx":3,
+    "pady":2,
+    "sticky":"w"
+}
+CNF_GRID_BTN_SCREEN_WINDOW={
+    "padx":3,
+    "pady":2,
+    "sticky":"e",
+}
+
+########################################################## # CNF WIDGETS
+CNF_WINDOW={
+    "bg":BG,
+
+}
+
+CNF_LABLE_FRAME={
+    "bg":BG,
+    "fg":FG,
+    "font":("tahoma",11,"bold"),
+}
+CNF_FRAME={
+    "bg":BG,
+ 
+}
+
+CNF_ENTRY_GENERAL={
+    "font":("tahoma",16,"bold"),
+    "fg":BG,
+}
+
+
+CNF_BTN_ROOT={
+    "bg":BG,
+    "fg":FG,
+    "width":7,
+    "height":1,
+    "activebackground":FG,
+    "activeforeground":BG,
+    "font":("tahoma",16,"bold"),
+    "cursor":"hand2",    
+}
+CNF_LBL_ROOT={
+    "bg":BG,
+    "fg":FG,
+    "font":("tahoma",17,"bold"),   
+}
+
+CNF_LBL_SIGN_UP_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "font":("tahoma",17,"bold"),   
+}
+CNF_BTN_SIGN_UP_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "width":6,
+    "height":1,
+    "activebackground":FG,
+    "activeforeground":BG,
+    "font":("tahoma",16,"bold"),
+    "cursor":"hand2",    
+}
+
+CNF_LBL_LOGIN_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "font":("tahoma",17,"bold"),   
+}
+CNF_BTN_LOGIN_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "width":6,
+    "height":1,
+    "activebackground":FG,
+    "activeforeground":BG,
+    "font":("tahoma",16,"bold"),
+    "cursor":"hand2",    
+}
+
+CNF_BTN_MAIN_MENU={
+    "bg":BG,
+    "fg":FG,
+    "width":18,
+    "height":1,
+    "activebackground":FG,
+    "activeforeground":BG,
+    "font":("tahoma",16,"bold"), 
+    "cursor":"hand2",   
+}
+
+CNF_LBL_VIEW_RESERVATION_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "font":("tahoma",14,"bold"), 
+    "anchor":"w",
+}
+CNF_BTN_VIEW_RESERVATION_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "width":18 ,
+    "height":1,
+    "activebackground":FG,
+    "activeforeground":BG,
+    "font":("tahoma",16,"bold"), 
+    "cursor":"hand2", 
+}
+
+CNF_LBL_MOVIE_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "font":("tahoma",17,"bold"),   
+}
+CNF_BTN_MOVIE_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "width":12,
+    "height":1,
+    "activebackground":FG,
+    "activeforeground":BG,
+    "font":("tahoma",16,"bold"), 
+    "width":20  ,
+    "cursor":"hand2", 
+}
+
+CNF_LBL_HALL_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "font":("tahoma",17,"bold"),   
+}
+CNF_BTN_HALL_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "width":9,
+    "height":1,
+    "activebackground":FG,
+    "activeforeground":BG,
+    "font":("tahoma",16,"bold"), 
+    "cursor":"hand2",   
+}
+
+CNF_LBL_RESERVE_MOVIE_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "font":("tahoma",15,"bold"), 
+    "anchor":"w",
+}
+CNF_BTN_RESERVE_MOVIE_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "width":6,
+    "height":1,
+    "activebackground":FG,
+    "activeforeground":BG,
+    "font":("tahoma",16,"bold"),
+    "cursor":"hand2",    
+}
+
+CNF_BTN_SCREEN_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "width":16,
+    "height":1,
+    "activebackground":FG,
+    "activeforeground":BG,
+    "font":("tahoma",15,"bold"), 
+    "cursor":"hand2",   
+}
+CNF_LBL_SCREEN_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "font":("tahoma",15,"bold"), 
+    "anchor":"w",
+}
+
+CNF_LBL_SCREEN_BREAK_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "font":("tahoma",15,"bold"), 
+    "anchor":"w",
+}
+CNF_BTN_SCREEN_BREAK_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "width":12,
+    "height":1,
+    "activebackground":FG,
+    "activeforeground":BG,
+    "font":("tahoma",15,"bold"),
+    "cursor":"hand2",   
+}
+
+CNF_LBL_USERS_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "font":("tahoma",15,"bold"), 
+    "anchor":"w",
+}
+CNF_BTN_USERS_WINDOW={
+    "bg":BG,
+    "fg":FG,
+    "width":14,
+    "height":1,
+    "activebackground":FG,
+    "activeforeground":BG,
+    "font":("tahoma",15,"bold"),
+    "cursor":"hand2",   
+}

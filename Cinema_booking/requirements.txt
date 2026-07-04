@@ -1,0 +1,4 @@
+pymysql>=1.0.0
+DBUtils>=3.0.0
+Pillow>=9.0.0
+cryptography>=39.0.0
