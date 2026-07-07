@@ -40,11 +40,15 @@ def change_window(hide_window:Tk,show_window:Tk):
     if show_window==sign_up_window:         setup_sign_up_window(hide_window)            
     if show_window==main_menu:              setup_main_menu()
     if show_window==view_reservation_window:setup_view_reservation_window()          
-    if show_window==movie_window:           setup_movie_window()
+    if show_window==movie_window:           
+        search_movie()
+        set_combo_movie_id_movie_window_values()
     if show_window==screen_window:          setup_screen_window()                 
-    if show_window==hall_window:            setup_hall_window()    
+    if show_window==hall_window:            set_combo_list_hall_window_values()    
     if show_window==reserve_movie_window:   setup_reserve_movie_window()
-    if show_window==users_window:           setup_users_window()
+    if show_window==users_window:
+        search_user()
+        set_all_combo_users_window_values()           
       
     show_window.deiconify()
         
@@ -101,10 +105,8 @@ def setup_main_menu():
 def setup_view_reservation_window():
     global access_level
     search_reservation()
-    result=connection.set_combo_reservation_id_view_reservation_window_values(user_id,access_level)
-    result=sorted([item[0] for item in result])
-    combo_reservation_id_view_reservation_window.config(values=[""]+result)
-
+    set_combo_reservation_id_view_reservation_window_values()
+    
     if access_level==1:
         btn_add_view_reservation_window                 .grid(CNF_GRID_GENERAL,row=1,column=2)
         btn_update_view_reservation_window              .grid(CNF_GRID_GENERAL,row=1,column=3)
@@ -112,26 +114,12 @@ def setup_view_reservation_window():
         btn_add_view_reservation_window                 .grid_forget()
         btn_update_view_reservation_window              .grid_forget()
         entry_username_view_reservation_window          .config(state="disabled")
-
-def setup_movie_window():
-    search_movie()
-    result=connection.set_combo_movie_id_movie_window_values()
-    result=[item[0] for item in result]
-    combo_movie_id_movie_window.config(values=[""]+result)
-    
+ 
 def setup_screen_window():
     global access_level
     search_screen()
-    result1=connection.set_combo_hall_screen_window_values()
-    result2=connection.set_combo_movie_screen_window_values()
-    result3=connection.set_combo_screen_id_screen_window_values(access_level)
-    result1=[item[0] for item in result1]
-    result2=[item[0] for item in result2]
-    result3=[item[0] for item in result3]
-    combo_hall_screen_window                .config(values=[""]+result1)
-    combo_movie_screen_window               .config(values=[""]+result2)
-    combo_screen_id_screen_window           .config(values=[""]+result3)
-    
+    set_all_combo_screen_window_values()
+
     if access_level==2:
         btn_add_screen_screen_window       .grid_forget()
         btn_update_screen_screen_window    .grid_forget()
@@ -142,25 +130,13 @@ def setup_screen_window():
         btn_add_screen_screen_window       .grid(CNF_GRID_BTN_SCREEN_WINDOW,row=2,column=1)
         btn_update_screen_screen_window    .grid(CNF_GRID_BTN_SCREEN_WINDOW,row=3,column=1)
         btn_delete_screen_screen_window    .grid(CNF_GRID_BTN_SCREEN_WINDOW,row=4,column=1)
-
-def setup_hall_window():
-    result5=connection.set_combo_list_hall_window_values()
-    result5=[f"{item[0]} - ({item[1]})" for item in result5]  
-    combo_list_hall_window.config(values=result5)
-    
+   
 def setup_reserve_movie_window():
     for entry in lst_entry_screen_info_reserve_movie_window:
         entry.config(state="normal")
         entry.delete(0,END)
     entry_seat_count_reserve_movie_window.delete(0,END)
 
-def setup_users_window():
-    search_user()
-    result1=connection.set_combo_user_id_users_window_values()
-    result2=sorted([item[0] for item in list(result1)])
-    combo_user_id_users_window.config(values=[""]+result2)
-    result3=[item[1] for item in result1]
-    combo_username_users_window.config(values=[""]+result3)
 
        
 def insert_user():
@@ -188,7 +164,9 @@ def insert_user():
     result=connection.insert_user(name,surname,username,password)
     if result[0]==1:
         msb.showinfo("User created!",result[1])
-        change_window(sign_up_window,root)
+        
+        if access_level==1:change_window(sign_up_window,users_window)
+        else:change_window(sign_up_window,root)    
     else:
         msb.showerror("User not created!",result[1])
     
@@ -270,10 +248,12 @@ def add_reservation():
     result=connection.add_reservation(user_id_,screen_id,int(seat_count),reserved_at)
     if result[0]==1:
         msb.showinfo("Done!",result[1])
+        search_reservation()
+        set_combo_reservation_id_view_reservation_window_values()  
     else:
         msb.showerror("Failed",result[1])
-        
-
+    
+      
 def get_reservation_data(event:Event):
     reservation_id=combo_reservation_id_view_reservation_window    .get().strip()
     result=connection.get_reservation_data(reservation_id)
@@ -328,8 +308,10 @@ def update_reservation():
         return
     else:
         msb.showinfo("Successful update", result[1])
-
-
+        search_reservation()
+        set_combo_reservation_id_view_reservation_window_values()
+   
+    
 def delete_reservation():
     reservation_id=combo_reservation_id_view_reservation_window  .get().strip()
     screen_id=entry_screen_id_view_reservation_window            .get().strip() 
@@ -346,7 +328,9 @@ def delete_reservation():
         return
     else:
         msb.showinfo("Done!",result[1])
-    
+        search_reservation()
+        set_combo_reservation_id_view_reservation_window_values()
+
 
 def insert_movie():
     movie_id=combo_movie_id_movie_window            .get().strip()
@@ -368,7 +352,7 @@ def insert_movie():
             return    
     except:
         msb.showwarning("Invalid datetime","You can't enter this datetime.")
-        return
+        
     
         
     
@@ -378,11 +362,11 @@ def insert_movie():
         msb.showerror("Addition faield",result[1])
     else:
         msb.showinfo("Successful",result[1])
-            
+        search_movie()
+        set_combo_movie_id_movie_window_values()    
     temp=[combo_movie_id_movie_window,entry_title_movie_window,entry_director_movie_window,entry_genre_movie_window,entry_duration_movie_window,entry_release_date_movie_window,entry_rating_movie_window]
     clear_entries(temp)
-    search_movie()
-
+    
 
 def get_movie_data(event:Event):
     movie_id=combo_movie_id_movie_window    .get().strip()
@@ -417,11 +401,12 @@ def update_movie():
         return
     else:
         msb.showinfo("Successful update",result[1])
+        search_movie()   
+        set_combo_movie_id_movie_window_values() 
     temp=[combo_movie_id_movie_window,entry_title_movie_window,entry_director_movie_window,entry_genre_movie_window,entry_duration_movie_window,entry_release_date_movie_window,entry_rating_movie_window]
     clear_entries(temp)
-    search_movie()   
-  
-        
+       
+       
 def delete_movie():
     movie_id=combo_movie_id_movie_window    .get().strip()
     title=entry_title_movie_window          .get().strip()
@@ -437,11 +422,12 @@ def delete_movie():
         return
     else:
         msb.showinfo("Done!",result[1])
+        search_movie()       
+        set_combo_movie_id_movie_window_values() 
     temp=[combo_movie_id_movie_window,entry_title_movie_window,entry_director_movie_window,entry_genre_movie_window,entry_duration_movie_window,entry_release_date_movie_window,entry_rating_movie_window]
     clear_entries(temp)
-    search_movie()       
-
-
+    
+ 
 def search_movie():
     movie_id=combo_movie_id_movie_window         .get().strip()
     title=entry_title_movie_window               .get().strip()
@@ -460,8 +446,8 @@ def search_movie():
         treev_movie_window.delete(*treev_movie_window.get_children())
         for item in result:
             treev_movie_window.insert("",END,values=item)
- 
-      
+    
+       
 def add_hall():
     name=entry_name_hall_window.get().strip()
     capacity=entry_capacity_hall_window.get().strip() 
@@ -479,6 +465,9 @@ def add_hall():
         return
     else:
         msb.showinfo("Done!",result[1])
+        set_combo_list_hall_window_values()
+    temp=[entry_name_hall_window,entry_capacity_hall_window]
+    clear_entries(temp)
 
 
 def delete_hall():
@@ -492,6 +481,9 @@ def delete_hall():
         return
     else:
         msb.showinfo("Done!",result[1])
+        set_combo_list_hall_window_values()    
+    temp=[entry_name_hall_window,entry_capacity_hall_window]
+    clear_entries(temp)
 
 
 def reserve_ticket():
@@ -566,7 +558,7 @@ def search_screen():
         result=result[1]
         for item in result:
             treev_screen_window.insert("",END,values=item)
-        
+
 
 def add_screen():
     screen_id=combo_screen_id_screen_window                  .get().strip()
@@ -599,8 +591,9 @@ def add_screen():
         return
     else:
         msb.showinfo("Done!",result[1])
-        return
-  
+        search_screen()
+        set_all_combo_screen_window_values() 
+
         
 def get_screen_data(event:Event):
     screen_id=combo_screen_id_screen_window    .get().strip()
@@ -642,8 +635,10 @@ def update_screen():
         return
     else:
         msb.showinfo("Done!",result[1])    
-    
-    
+        set_all_combo_screen_window_values()
+        search_screen()
+
+
 def delete_screen():
     screen_id=combo_screen_id_screen_window.get().strip()
     movie=combo_movie_screen_window.get().strip()
@@ -659,6 +654,8 @@ def delete_screen():
         return
     else:
         msb.showinfo("Done!",result[1])
+        search_screen()
+        set_all_combo_screen_window_values()
 
 
 def search_user():
@@ -718,6 +715,8 @@ def update_user():
         return
     else:
         msb.showinfo("Done!",result[1])    
+        search_user()
+        set_all_combo_users_window_values()
 
 
 def delete_user():
@@ -735,6 +734,8 @@ def delete_user():
         return
     else:
         msb.showinfo("Done!",result[1]) 
+        search_user()
+        set_all_combo_users_window_values()
 
 
 def edit_profile():
@@ -772,7 +773,45 @@ def edit_profile():
     
     temp=[entry_name_sign_up_window,entry_surname_sign_up_window,entry_username_sign_up_window,entry_password_sign_up_window,entry_password2_sign_up_window,entry_access_level_sign_up_window]
     clear_entries(temp)
+
+
+
+def set_combo_reservation_id_view_reservation_window_values ():
+    result=connection.set_combo_reservation_id_view_reservation_window_values(user_id,access_level)
+    result=sorted([item[0] for item in result])
+    combo_reservation_id_view_reservation_window.config(values=[""]+result)
+
+def set_combo_movie_id_movie_window_values ():
+    result=connection.set_combo_movie_id_movie_window_values()
+    result=[item[0] for item in result]
+    combo_movie_id_movie_window.config(values=[""]+result)
+
+def set_combo_list_hall_window_values ():
+    result=connection.set_combo_list_hall_window_values()
+    result=[f"{item[0]} - ({item[1]})" for item in result]  
+    combo_list_hall_window.config(values=result)
     
+def set_all_combo_screen_window_values ():
+    screen_id=connection.set_combo_screen_id_screen_window_values(access_level)
+    screen_id=[item[0] for item in screen_id]
+    combo_screen_id_screen_window.config(values=[""]+screen_id)
+    
+    movie=connection.set_combo_movie_screen_window_values()
+    movie=[item[0] for item in movie]
+    combo_movie_screen_window.config(values=[""]+movie)
+
+    hall=connection.set_combo_hall_screen_window_values()
+    hall=[item[0] for item in hall]
+    combo_hall_screen_window.config(values=[""]+hall)
+
+def set_all_combo_users_window_values ():
+    result=connection.set_all_combo_users_window_values()
+    
+    user_id=sorted([item[0] for item in list(result)])
+    combo_user_id_users_window.config(values=[""]+user_id)
+    
+    username=[item[1] for item in result]
+    combo_username_users_window.config(values=[""]+username)   
 
 ############ ROOT WINDOW    
 root=Tk()
@@ -782,7 +821,7 @@ root.title("IRAN Cinema")
 root.geometry("450x110+50+50")
 root.resizable(False,False)
 root.config(cnf=CNF_WINDOW)
-photo_root=Image.open(r"Cinema booking system (tkinter)\Images\root_icon.jpg")
+photo_root=Image.open(r"Cinema_booking/cinema_booking/Cinema booking system (tkinter)/Images/root_icon.jpg")
 photo_root=ImageTk.PhotoImage(photo_root)
 root.iconphoto(False,photo_root)
 
@@ -801,7 +840,7 @@ sign_up_window.resizable(False,False)
 sign_up_window.withdraw()
 sign_up_window.protocol("WM_DELETE_WINDOW",root.destroy)
 sign_up_window.config(CNF_WINDOW)
-photo_sign_up=Image.open(r"Cinema booking system (tkinter)\Images\sign_up_icon.png")
+photo_sign_up=Image.open(r"Cinema_booking/cinema_booking/Cinema booking system (tkinter)/Images/sign_up_icon.png")
 photo_sign_up=ImageTk.PhotoImage(photo_sign_up)
 sign_up_window.iconphoto(False,photo_sign_up)
 
@@ -841,7 +880,7 @@ login_window.withdraw()
 login_window.protocol("WM_DELETE_WINDOW",root.destroy)
 login_window.title("Login window")
 login_window.config(CNF_WINDOW)
-photo_login=Image.open(r"Cinema booking system (tkinter)\Images\login_icon.png")
+photo_login=Image.open(r"Cinema_booking/cinema_booking/Cinema booking system (tkinter)/Images/login_icon.png")
 photo_login=ImageTk.PhotoImage(photo_login)
 login_window.iconphoto(False,photo_login)
 
@@ -867,7 +906,7 @@ main_menu.withdraw()
 main_menu.protocol("WM_DELETE_WINDOW",root.destroy)
 main_menu.title("Main menu")
 main_menu.config(CNF_WINDOW)
-photo_main_menu=Image.open(r"Cinema booking system (tkinter)\Images\main_menu_icon.png")
+photo_main_menu=Image.open(r"Cinema_booking/cinema_booking/Cinema booking system (tkinter)/Images/main_menu_icon.png")
 photo_main_menu=ImageTk.PhotoImage(photo_main_menu)
 main_menu.iconphoto(False,photo_main_menu)
 
@@ -891,7 +930,7 @@ view_reservation_window.withdraw()
 view_reservation_window.protocol("WM_DELETE_WINDOW",root.destroy)
 view_reservation_window.title("Reservation window")
 view_reservation_window.config(CNF_WINDOW)
-photo_view_reservation=Image.open(r"Cinema booking system (tkinter)\Images\view_reservation_icon.png")
+photo_view_reservation=Image.open(r"Cinema_booking/cinema_booking/Cinema booking system (tkinter)/Images/view_reservation_icon.png")
 photo_view_reservation=ImageTk.PhotoImage(photo_view_reservation)
 view_reservation_window.iconphoto(False,photo_view_reservation)
 
@@ -929,7 +968,7 @@ entry_director_view_reservation_window          =Entry(frame_options_reservation
 entry_duration_view_reservation_window          =Entry(frame_options_reservation_window,CNF_ENTRY_GENERAL)
 entry_rating_view_reservation_window            =Entry(frame_options_reservation_window,CNF_ENTRY_GENERAL)
 
-btn_search_refresh_view_reservation_window      =Button(frame_btn_reservation_window,CNF_BTN_VIEW_RESERVATION_WINDOW,text="Search & refresh"    ,command=search_reservation)
+btn_search_view_reservation_window              =Button(frame_btn_reservation_window,CNF_BTN_VIEW_RESERVATION_WINDOW,text="Search"              ,command=search_reservation)
 btn_add_view_reservation_window                 =Button(frame_btn_reservation_window,CNF_BTN_VIEW_RESERVATION_WINDOW,text="Add reservation"     ,command=add_reservation)
 btn_update_view_reservation_window              =Button(frame_btn_reservation_window,CNF_BTN_VIEW_RESERVATION_WINDOW,text="Update reservation"  ,command=update_reservation)
 btn_delete_view_reservation_window              =Button(frame_btn_reservation_window,CNF_BTN_VIEW_RESERVATION_WINDOW,text="Delete reservation"  ,command=delete_reservation)
@@ -951,7 +990,7 @@ entry_movie_view_reservation_window             .grid(CNF_GRID_GENERAL,row=3,col
 entry_director_view_reservation_window          .grid(CNF_GRID_GENERAL,row=4,column=2)
 entry_duration_view_reservation_window          .grid(CNF_GRID_GENERAL,row=4,column=4)
 entry_rating_view_reservation_window            .grid(CNF_GRID_GENERAL,row=4,column=6)
-btn_search_refresh_view_reservation_window      .grid(CNF_GRID_GENERAL,row=1,column=1)
+btn_search_view_reservation_window              .grid(CNF_GRID_GENERAL,row=1,column=1)
 
 btn_delete_view_reservation_window              .grid(CNF_GRID_GENERAL,row=1,column=4)
 btn_back_view_reservation_window                .grid(CNF_GRID_GENERAL,row=1,column=5)
@@ -964,7 +1003,7 @@ movie_window.withdraw()
 movie_window.protocol("WM_DELETE_WINDOW",root.destroy)
 movie_window.title("Movie window")
 movie_window.config(CNF_WINDOW)
-photo_movie=Image.open(r"Cinema booking system (tkinter)\Images\movie_icon.png")
+photo_movie=Image.open(r"Cinema_booking/cinema_booking/Cinema booking system (tkinter)/Images/movie_icon.png")
 photo_movie=ImageTk.PhotoImage(photo_movie)
 movie_window.iconphoto(False,photo_movie)
 
@@ -983,11 +1022,11 @@ entry_genre_movie_window         =Entry(movie_window,CNF_ENTRY_GENERAL)
 entry_duration_movie_window      =Entry(movie_window,CNF_ENTRY_GENERAL)
 entry_release_date_movie_window  =Entry(movie_window,CNF_ENTRY_GENERAL)
 entry_rating_movie_window        =Entry(movie_window,CNF_ENTRY_GENERAL)
-btn_add_movie_window             =Button(movie_window,CNF_BTN_MOVIE_WINDOW,text="Add movie"                ,command=insert_movie)
-btn_search_movie_window          =Button(movie_window,CNF_BTN_MOVIE_WINDOW,text="Search & refresh movies"  ,command=search_movie)
-btn_update_movie_window          =Button(movie_window,CNF_BTN_MOVIE_WINDOW,text="Update movie"             ,command=update_movie)
-btn_delete_movie_window          =Button(movie_window,CNF_BTN_MOVIE_WINDOW,text="Delete movie"             ,command=delete_movie)
-btn_back_movie_window            =Button(movie_window,CNF_BTN_MOVIE_WINDOW,text="Back"                     ,command=lambda:change_window(movie_window,main_menu))
+btn_add_movie_window             =Button(movie_window,CNF_BTN_MOVIE_WINDOW,text="Add movie"      ,command=insert_movie)
+btn_search_movie_window          =Button(movie_window,CNF_BTN_MOVIE_WINDOW,text="Search movies"  ,command=search_movie)
+btn_update_movie_window          =Button(movie_window,CNF_BTN_MOVIE_WINDOW,text="Update movie"   ,command=update_movie)
+btn_delete_movie_window          =Button(movie_window,CNF_BTN_MOVIE_WINDOW,text="Delete movie"   ,command=delete_movie)
+btn_back_movie_window            =Button(movie_window,CNF_BTN_MOVIE_WINDOW,text="Back"           ,command=lambda:change_window(movie_window,main_menu))
 
 treev_movie_window               =ttk.Treeview(movie_window,columns=["1","2","3","4","5","6","7"],show="headings",selectmode="browse")
 scr_movie_window                 =Scrollbar(movie_window,orient="vertical",command=treev_movie_window.yview)
@@ -1032,7 +1071,7 @@ hall_window.withdraw()
 hall_window.protocol("WM_DELETE_WINDOW",root.destroy)
 hall_window.title("Hall window")
 hall_window.config(CNF_WINDOW)
-photo_hall=Image.open(r"Cinema booking system (tkinter)\Images\hall_icon.png")
+photo_hall=Image.open(r"Cinema_booking/cinema_booking/Cinema booking system (tkinter)/Images/hall_icon.png")
 photo_hall=ImageTk.PhotoImage(photo_hall)
 hall_window.iconphoto(False,photo_hall)
 
@@ -1064,7 +1103,7 @@ screen_window.withdraw()
 screen_window.protocol("WM_DELETE_WINDOW",root.destroy)
 screen_window.title("Screen window")
 screen_window.config(CNF_WINDOW)
-photo_screen=Image.open(r"Cinema booking system (tkinter)\Images\screen_icon.png")
+photo_screen=Image.open(r"Cinema_booking/cinema_booking/Cinema booking system (tkinter)/Images/screen_icon.png")
 photo_screen=ImageTk.PhotoImage(photo_screen)
 screen_window.iconphoto(False,photo_screen)
 
@@ -1091,12 +1130,12 @@ combo_movie_screen_window                       =ttk.Combobox(screen_window,widt
 combo_hall_screen_window                        =ttk.Combobox(screen_window,width=40,state="readonly")
 entry_screening_datetime_screen_window          =Entry(screen_window,CNF_ENTRY_GENERAL)
 entry_ticket_price_screen_window                =Entry(screen_window,CNF_ENTRY_GENERAL)
-btn_reserve_ticket_screen_window                =Button(screen_window,CNF_BTN_SCREEN_WINDOW,text="Reserve Ticket"           ,command=reserve_ticket)
-btn_add_screen_screen_window                    =Button(screen_window,CNF_BTN_SCREEN_WINDOW,text="Add Screen"               ,command=add_screen)
-btn_update_screen_screen_window                 =Button(screen_window,CNF_BTN_SCREEN_WINDOW,text="Update Screen"            ,command=update_screen)
-btn_delete_screen_screen_window                 =Button(screen_window,CNF_BTN_SCREEN_WINDOW,text="Delete Screen"            ,command=delete_screen)
-btn_search_refresh_screens_screen_window        =Button(screen_window,CNF_BTN_SCREEN_WINDOW,text="Search & Refresh Screen"  ,command=search_screen,font=("tahoma",13,"bold"),width=19)
-btn_back_screen_window                          =Button(screen_window,CNF_BTN_SCREEN_WINDOW,text="Back"                     ,command=lambda:change_window(screen_window,main_menu))
+btn_reserve_ticket_screen_window                =Button(screen_window,CNF_BTN_SCREEN_WINDOW,text="Reserve Ticket"     ,command=reserve_ticket)
+btn_add_screen_screen_window                    =Button(screen_window,CNF_BTN_SCREEN_WINDOW,text="Add Screen"         ,command=add_screen)
+btn_update_screen_screen_window                 =Button(screen_window,CNF_BTN_SCREEN_WINDOW,text="Update Screen"      ,command=update_screen)
+btn_delete_screen_screen_window                 =Button(screen_window,CNF_BTN_SCREEN_WINDOW,text="Delete Screen"      ,command=delete_screen)
+btn_search_screens_screen_window                =Button(screen_window,CNF_BTN_SCREEN_WINDOW,text="Search Screen"      ,command=search_screen,width=19)
+btn_back_screen_window                          =Button(screen_window,CNF_BTN_SCREEN_WINDOW,text="Back"               ,command=lambda:change_window(screen_window,main_menu))
 
 
 treev_screen_window                             .grid(CNF_GRID_GENERAL          ,row=1,column=1,sticky="news")
@@ -1111,7 +1150,7 @@ combo_movie_screen_window                       .grid(CNF_GRID_GENERAL          
 combo_hall_screen_window                        .grid(CNF_GRID_GENERAL          ,row=4,column=1)
 entry_screening_datetime_screen_window          .grid(CNF_GRID_GENERAL          ,row=5,column=1)
 entry_ticket_price_screen_window                .grid(CNF_GRID_GENERAL          ,row=6,column=1)
-btn_search_refresh_screens_screen_window        .grid(CNF_GRID_BTN_SCREEN_WINDOW,row=5,column=1)
+btn_search_screens_screen_window                .grid(CNF_GRID_BTN_SCREEN_WINDOW,row=5,column=1)
 btn_back_screen_window                          .grid(CNF_GRID_BTN_SCREEN_WINDOW,row=6,column=1)
 
 ############## RESERVE MOVIE WINDOW
@@ -1122,7 +1161,7 @@ reserve_movie_window.withdraw()
 reserve_movie_window.protocol("WM_DELETE_WINDOW",root.destroy)
 reserve_movie_window.title("Reserve movie window")
 reserve_movie_window.config(CNF_WINDOW)
-photo_reserve=Image.open(r"Cinema booking system (tkinter)\Images\reserve_icon.png")
+photo_reserve=Image.open(r"Cinema_booking/cinema_booking/Cinema booking system (tkinter)/Images/reserve_icon.png")
 photo_reserve=ImageTk.PhotoImage(photo_reserve)
 reserve_movie_window.iconphoto(False,photo_reserve)
 
@@ -1190,7 +1229,7 @@ users_window.withdraw()
 users_window.protocol("WM_DELETE_WINDOW",root.destroy)
 users_window.title("Users window")
 users_window.config(CNF_WINDOW)
-photo_users=Image.open(r"Cinema booking system (tkinter)\Images\users_icon.png")
+photo_users=Image.open(r"Cinema_booking/cinema_booking/Cinema booking system (tkinter)/Images/users_icon.png")
 photo_users=ImageTk.PhotoImage(photo_users)
 users_window.iconphoto(False,photo_users)
 
@@ -1220,11 +1259,11 @@ entry_surname_users_window      =Entry(frame_options_users_window,CNF_ENTRY_GENE
 combo_username_users_window     =ttk.Combobox(frame_options_users_window,width=40)
 combo_access_level_users_window =ttk.Combobox(frame_options_users_window,width=40,values=["",1,2],state="readonly")
 
-btn_search_refresh_users_window =Button(frame_btn_users_window,CNF_BTN_USERS_WINDOW,text="Search & refresh" ,command=search_user)
-btn_add_users_window            =Button(frame_btn_users_window,CNF_BTN_USERS_WINDOW,text="Add user"         ,command=lambda:change_window(users_window,sign_up_window))
-btn_update_users_window         =Button(frame_btn_users_window,CNF_BTN_USERS_WINDOW,text="Update user"      ,command=update_user)
-btn_delete_users_window         =Button(frame_btn_users_window,CNF_BTN_USERS_WINDOW,text="Delete user"      ,command=delete_user)
-btn_back_users_window           =Button(frame_btn_users_window,CNF_BTN_USERS_WINDOW,text="Back"             ,command=lambda:change_window(users_window,main_menu))
+btn_search_users_window         =Button(frame_btn_users_window,CNF_BTN_USERS_WINDOW,text="Search user"  ,command=search_user)
+btn_add_users_window            =Button(frame_btn_users_window,CNF_BTN_USERS_WINDOW,text="Add user"     ,command=lambda:change_window(users_window,sign_up_window))
+btn_update_users_window         =Button(frame_btn_users_window,CNF_BTN_USERS_WINDOW,text="Update user"  ,command=update_user)
+btn_delete_users_window         =Button(frame_btn_users_window,CNF_BTN_USERS_WINDOW,text="Delete user"  ,command=delete_user)
+btn_back_users_window           =Button(frame_btn_users_window,CNF_BTN_USERS_WINDOW,text="Back"         ,command=lambda:change_window(users_window,main_menu))
 
 
 treev_users_window              .grid(CNF_GRID_GENERAL,row=1,column=1,sticky="news")
@@ -1241,7 +1280,7 @@ entry_name_users_window         .grid(CNF_GRID_GENERAL,row=1,column=4)
 entry_surname_users_window      .grid(CNF_GRID_GENERAL,row=2,column=2)
 combo_username_users_window     .grid(CNF_GRID_GENERAL,row=2,column=4)
 combo_access_level_users_window .grid(CNF_GRID_GENERAL,row=3,column=2)
-btn_search_refresh_users_window .grid(CNF_GRID_GENERAL,row=1,column=1)
+btn_search_users_window         .grid(CNF_GRID_GENERAL,row=1,column=1)
 btn_add_users_window            .grid(CNF_GRID_GENERAL,row=1,column=2)
 btn_update_users_window         .grid(CNF_GRID_GENERAL,row=1,column=3)
 btn_delete_users_window         .grid(CNF_GRID_GENERAL,row=1,column=4)

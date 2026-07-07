@@ -44,8 +44,8 @@ class Connection():
   `password` VARCHAR(64) NOT NULL,\
   `access_level` TINYINT(1) UNSIGNED NOT NULL DEFAULT 2,\
   PRIMARY KEY (`idusers`),\
-  UNIQUE INDEX `idusers_UNIQUE` (`idusers` ASC) VISIBLE,\
-  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE);",
+  UNIQUE INDEX `idusers_UNIQUE` (`idusers` ASC),\
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC));",
         
         "CREATE TABLE IF NOT EXISTS  `movies` (\
   `idmovies` SMALLINT(4) UNSIGNED NOT NULL AUTO_INCREMENT,\
@@ -56,16 +56,16 @@ class Connection():
   `release_date` DATETIME(1) NOT NULL,\
   `rating` DECIMAL(3,1) UNSIGNED NOT NULL,\
   PRIMARY KEY (`idmovies`),\
-  UNIQUE INDEX `idmovies_UNIQUE` (`idmovies` ASC) VISIBLE,\
-  UNIQUE INDEX `title_UNIQUE` (`title` ASC) VISIBLE);",
+  UNIQUE INDEX `idmovies_UNIQUE` (`idmovies` ASC),\
+  UNIQUE INDEX `title_UNIQUE` (`title` ASC));",
         
         "CREATE TABLE IF NOT EXISTS `halls` (\
   `idhalls` SMALLINT(4) UNSIGNED NOT NULL AUTO_INCREMENT,\
   `name` VARCHAR(100) NOT NULL,\
   `capacity` SMALLINT(3) UNSIGNED NOT NULL,\
   PRIMARY KEY (`idhalls`),\
-  UNIQUE INDEX `idhalls_UNIQUE` (`idhalls` ASC) VISIBLE,\
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE);",
+  UNIQUE INDEX `idhalls_UNIQUE` (`idhalls` ASC),\
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC));",
         
         "CREATE TABLE IF NOT EXISTS `screening` (\
   `idscreens` SMALLINT(4) UNSIGNED NOT NULL AUTO_INCREMENT,\
@@ -74,9 +74,9 @@ class Connection():
   `screening_datetime` DATETIME(2) NOT NULL,\
   `ticket_price` DECIMAL(4,1) UNSIGNED NOT NULL,\
   PRIMARY KEY (`idscreens`),\
-  UNIQUE INDEX `idscreens_UNIQUE` (`idscreens` ASC) VISIBLE,\
-  INDEX `movie_idx` (`movie` ASC) VISIBLE,\
-  INDEX `hall_idx` (`hall` ASC) VISIBLE,\
+  UNIQUE INDEX `idscreens_UNIQUE` (`idscreens` ASC),\
+  INDEX `movie_idx` (`movie` ASC),\
+  INDEX `hall_idx` (`hall` ASC),\
   CONSTRAINT `movie`\
     FOREIGN KEY (`movie`)\
     REFERENCES `movies` (`idmovies`)\
@@ -95,9 +95,9 @@ class Connection():
   `seats_count` TINYINT(2) UNSIGNED NOT NULL,\
   `reserved_at` DATETIME(2) NOT NULL,\
   PRIMARY KEY (`idreservations`),\
-  UNIQUE INDEX `idreservations_UNIQUE` (`idreservations` ASC) VISIBLE,\
-  INDEX `user_idx` (`user` ASC) VISIBLE,\
-  INDEX `screening_idx` (`screening` ASC) VISIBLE,\
+  UNIQUE INDEX `idreservations_UNIQUE` (`idreservations` ASC),\
+  INDEX `user_idx` (`user` ASC),\
+  INDEX `screening_idx` (`screening` ASC),\
   CONSTRAINT `user`\
     FOREIGN KEY (`user`)\
     REFERENCES `users` (`idusers`)\
@@ -684,7 +684,7 @@ class Connection():
         except Exception as e:
             return [] 
         
-    def set_combo_user_id_users_window_values(self):
+    def set_all_combo_users_window_values(self):
         query="SELECT idusers,username FROM `users`;"
         try:
             with DatabasePool.get_cursor() as cursor:
@@ -783,8 +783,7 @@ class Connection():
         except Exception as e:
             return False
     
-    
-        
+ 
     
 
 

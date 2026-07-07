@@ -49,21 +49,20 @@ pip (Python package manager)
 This project includes **two versions** of the cinema booking:
 
 | **Tkinter Version** | classic version |
+
 | **CustomTkinter Version** | modern version |
+
+**NOTE:Customtkinter file is only for showing modern UI and may have some small bugs.**  
 
 🚀 Installation & Setup
 
 1. Clone the repository
-
-bash
 
 git clone https://github.com/aliazizi782-ai/cinema-booking.git
 
 cd cinema-booking
 
 2. Install dependencies
-
-bash
 
 pip install -r requirements.txt
 
@@ -95,8 +94,6 @@ The database cinema_booking and all tables will be created automatically on the 
 
 4. Run the application
 
-bash
-
 python cinema_app.py
 
 🧑‍💻 User Roles
@@ -125,20 +122,10 @@ reservations – id, user (FK), screening (FK), seats_count, reserved_at
 
 All foreign keys are protected with ON DELETE RESTRICT to maintain data integrity.
 
-📁 Project Structure
 
-text
-cinema-booking/
-├── cinema_app.py          # Main entry point – GUI and application logic
-├── db_connection.py       # Database operations and business logic
-├── db_pool.py             # Connection pooling with DBUtils
-├── config.py              # Styling constants (colors, fonts, grid settings)
-├── utils.py               # Helper functions (password hashing, clearing entries)
-├── images/                # Window icons (optional)
-├── requirements.txt       # Python dependencies
-└── README.md              # This file
 
 💡 Usage Tips
+
 Default admin login – There is no default admin; you must create one either via SQL or through the "Add user" function in the admin panel after logging in as an admin.
 
 Date/time format – All datetime fields must follow the pattern YYYY-MM-DD HH:MM:SS (e.g., 2026-07-03 18:30:00).
@@ -200,33 +187,13 @@ Happy coding! 🎥🎟️
 
 📸 Screenshots
 
-![img1](screen_shots\screen_shot_1.JPG)
+![img1](screen_shots/screen_shot_1.JPG)
 
-![img2](screen_shots\screen_shot_2.JPG)
+![img2](screen_shots/screen_shot_2.JPG)
 
-![img3](screen_shots\screen_shot_3.JPG)
+![img3](screen_shots/screen_shot_3.JPG)
 
-![img4](screen_shots\screen_shot_4.JPG)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![img4](screen_shots/screen_shot_4.JPG)
 
 
 
