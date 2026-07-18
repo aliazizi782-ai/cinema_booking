@@ -195,25 +195,3 @@ Happy coding! 🎥🎟️
 
 ![img4](screen_shots/screen_shot_4.JPG)
 
-
-
-📬 Contact
-
-Author:Ali Azizi
-
-Email:aliazizi@gmail.com
-
-https://github.com/aliazizi782-ai
-
-https://pypi.org/user/aliazizi782
-
-Status:Computer Engineering Student
-
-Level:Beginner (actively learning!)
-
-💌 Feel free to email me! I'm happy to discuss problems, suggestions, or just talk about Python.
-
-📄 License
-
-This project is open-source and available under the MIT License.
-
